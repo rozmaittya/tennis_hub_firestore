@@ -1,22 +1,30 @@
 # Tennis Hub 🎾
+<p align="center">
+  <img src="screenshots/preview.png" alt="Tennis Hub App Preview" width="300">
+</p>
 
 Tennis Hub is a Flutter mobile app designed to help tennis players
 track skill development, manage training goals, and stay motivated
 with daily improvement tips.
 
-The app demonstrates a clean Flutter architecture, local persistence,
+The app demonstrates clean Flutter architecture, local persistence,
 and scalable state management — suitable for real-world sports and
 lifestyle applications.
 
 ---
 
-## 📱 App Preview
+## 📱 App Screenshots
 
 <!-- Screenshots -->
+### Home & Guidance
 <img src="screenshots/tip_of_day.png" width="230" />
 <img src="screenshots/help.png" width="230" />
+
+### Skills & Areas
 <img src="screenshots/skill_areas.png" width="230" />
 <img src="screenshots/skills.png" width="230" />
+
+### Goals & Progress
 <img src="screenshots/goals.png" width="230" />
 <img src="screenshots/mastered_skills.png" width="230" />
 
@@ -26,7 +34,7 @@ lifestyle applications.
 
 ## 🚀 Key Features
 
-- Skills with groups with progress tracking
+- Skills organized into groups with progress tracking
 - Training and match goals
 - "Tip of the Day" to encourage consistent improvement
 - Local data persistence using SQLite

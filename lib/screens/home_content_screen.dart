@@ -29,10 +29,12 @@ class HomeContentScreen extends ConsumerWidget {
           onLongPress: () {
             Clipboard.setData(
               ClipboardData(
-                text: '''
+                text:
+                    '''
             ${tip.title}
             ${tip.text}
-            '''),
+            ''',
+              ),
             );
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Tip copied to clipboard')),
@@ -79,7 +81,9 @@ class HomeContentScreen extends ConsumerWidget {
                         return;
                       }
 
-                      final areaId = await ref.read(areaIdByNameProvider(tip.area));
+                      final areaId = await ref.read(
+                        areaIdByNameProvider(tip.area),
+                      );
 
                       if (areaId == null) {
                         ScaffoldMessenger.of(context).showSnackBar(

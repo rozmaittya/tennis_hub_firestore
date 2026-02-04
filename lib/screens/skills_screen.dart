@@ -167,6 +167,7 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                   context: context,
                   position: const RelativeRect.fromLTRB(200, 200, 50, 50),
                   items: const [
+                    PopupMenuItem(value: 'addToGoals', child: Text('Add to goals')),
                     PopupMenuItem(value: 'edit', child: Text('Edit')),
                     PopupMenuItem(value: 'delete', child: Text('Delete')),
                   ],
@@ -211,6 +212,15 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                         .read(skillsProvider(widget.areaId).notifier)
                         .loadSkills();
                   }
+                } else if (result == 'addToGoals') {
+                    final skillId = skill[SkillTable.id] as int;
+                    await ref.read(goalsProvider.notifier).addGoal(skillId);
+
+                    if (!mounted) return;
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Added to goals'))
+                    );
                 }
               },
             );
