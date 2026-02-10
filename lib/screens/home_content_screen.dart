@@ -121,7 +121,9 @@ class HomeContentScreen extends ConsumerWidget {
 
                   SizedBox(height: 10),
 
-                  Row(
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
                     children: [
                       ElevatedButton.icon(
                         onPressed: () =>
