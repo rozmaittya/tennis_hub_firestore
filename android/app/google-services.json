@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "673377161049",
+    "project_id": "tennis-hub-id",
+    "storage_bucket": "tennis-hub-id.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673377161049:android:cd0a395cb1dd33da9c0648",
+        "android_client_info": {
+          "package_name": "com.example.progress_hub_2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgwUjjCr9tEALbuYLnFCnUoy8bFLx9bnQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
