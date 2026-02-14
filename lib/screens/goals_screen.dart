@@ -88,7 +88,7 @@ class GoalsScreen extends ConsumerStatefulWidget {
                 tapPosition: _tapPosition,
                 items: const [
                   PopupMenuItem(value: 'edit', child: Text('edit')),
-                  PopupMenuItem(value: 'achieved', child: Text('achieved')),
+                  //PopupMenuItem(value: 'achieved', child: Text('achieved')),
                   PopupMenuItem(value: 'delete', child: Text('delete')),
                 ],
               );
