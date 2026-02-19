@@ -45,7 +45,7 @@ class HomePage extends ConsumerWidget {
                 onPressed: () {
                   ref.read(currentScreenProvider.notifier).state = ScreenData(
                       title: 'Skills',
-                      screen: const ProgressAreasScreen(),
+                      screen: const SkillAreasScreen(),
                   );
                   },
                   ),

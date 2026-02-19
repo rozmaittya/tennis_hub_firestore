@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:progress_hub_2/providers/goals_providers.dart';
-import '../providers/skill_areas_providers.dart';
+import '../features/skills/presentation/providers/skill_areas_provider.dart';
 import '../screens/skills_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/tennis_ball_button.dart';
 import '../providers/mastered_screens_providers.dart';
 import '../database/db_constants.dart';
 
-class ProgressAreasScreen extends ConsumerStatefulWidget {
-  const ProgressAreasScreen({super.key});
+class SkillAreasScreen extends ConsumerStatefulWidget {
+  const SkillAreasScreen({super.key});
 
   @override
-  ConsumerState<ProgressAreasScreen> createState() =>
-      _ProgressAreasScreenState();
+  ConsumerState<SkillAreasScreen> createState() =>
+      _SkillAreasScreenState();
 }
 
-class _ProgressAreasScreenState extends ConsumerState<ProgressAreasScreen> {
+class _SkillAreasScreenState extends ConsumerState<SkillAreasScreen> {
 
   //editing progress area name
-  Future<void> _editItem(int id, String currentName) async {
+  Future<void> _editItem(String id, String currentName) async {
     String updatedName = currentName;
     await showDialog(
       context: context,
@@ -51,16 +51,16 @@ class _ProgressAreasScreenState extends ConsumerState<ProgressAreasScreen> {
       },
     ).then((result) async {
       if (result != null && result is String) {
-        await ref.read(areasProvider.notifier).editArea(id, result);
+        await ref.read(skillAreasControllerProvider).editArea(id, result);
+
         ref.invalidate(masteredSkillsProvider);
         ref.invalidate(goalsProvider);
-
       }
     });
   }
 
   Future<void> _showAddSkillDialog() async {
-    String skillName = '';
+    String skillAreaName = '';
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -73,7 +73,7 @@ class _ProgressAreasScreenState extends ConsumerState<ProgressAreasScreen> {
               hintText: 'Input progress area name',
             ),
             onChanged: (value) {
-              skillName = value;
+              skillAreaName = value;
             },
           ),
           actions: [
@@ -86,10 +86,10 @@ class _ProgressAreasScreenState extends ConsumerState<ProgressAreasScreen> {
 
             TextButton(
               onPressed: () {
-                if (skillName
+                if (skillAreaName
                     .trim()
                     .isNotEmpty) {
-                  Navigator.of(context).pop(skillName);
+                  Navigator.of(context).pop(skillAreaName);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Name can\'t be empty')),
@@ -104,25 +104,31 @@ class _ProgressAreasScreenState extends ConsumerState<ProgressAreasScreen> {
       },
     ).then((result) async {
       if (result != null && result is String) {
-        await ref.read(areasProvider.notifier).addArea(result);
+        await ref.read(skillAreasControllerProvider).addArea(result);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final skills = ref.watch(areasProvider);
+    final areasAsync = ref.watch(skillAreasStreamProvider);
+       // final skills = ref.watch(areasProvider);
 
      return  Scaffold(
        backgroundColor: Colors.transparent,
-       body:
-       ListView.builder(
-        itemCount: skills.length,
+       body: areasAsync.when(
+         loading: () => const Center(child: CircularProgressIndicator()),
+         error: (e, _) => Center(child: Text('Error: $e')),
+         data: (areas) => ListView.builder(
+        itemCount: areas.length,
         itemBuilder: (context, index) {
-          final skill = skills[index];
+          final area = areas[index];
+          final areaId = area['id'] as String;
+          final areaName = (area['name'] as String) ?? '';
+
           return ListTile(
-            leading: Icon(Icons.sports_tennis),
-            title: Text(skill[SkillTable.name], style:
+            leading: const Icon(Icons.sports_tennis),
+            title: Text(areaName, style:
               TextStyle(
                 fontWeight: FontWeight.bold,
               ),
@@ -133,21 +139,21 @@ class _ProgressAreasScreenState extends ConsumerState<ProgressAreasScreen> {
                 MaterialPageRoute(
                   builder: (context) =>
                       SkillsScreen(
-                        areaId: skill[SkillTable.id],
-                        areaName: skill[SkillTable.name],
+                        areaId: areaId,
+                        areaName: areaName,
                       ),
                 ),
               );
             },
             onLongPress: () =>
-                _editItem(skill[SkillTable.id], skill[SkillTable.name]),
+                _editItem(areaId, areaName),
           );
         },
       ),
-
+       ),
        floatingActionButton: TennisBallButton(
         onPressed: _showAddSkillDialog,
-       )
+       ),
        );
   }
 }

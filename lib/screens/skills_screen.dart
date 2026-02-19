@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:progress_hub_2/database/db_constants.dart';
-import '../utils/edit_item_dialog.dart';
+//import '../utils/edit_item_dialog.dart';
 import '../providers/skills_providers.dart';
-import '../providers/database_provider.dart';
+//import '../providers/database_provider.dart';
 import '../providers/mastered_screens_providers.dart';
 import '../providers/goals_providers.dart';
 import '../widgets/tennis_ball_button.dart';
 import '../utils/gradient_background.dart';
-import '../database/db_constants.dart';
+//import '../database/db_constants.dart';
+import '../features/skills/presentation/providers/skills_firestore_provider.dart';
 
 class SkillsScreen extends ConsumerStatefulWidget {
-  final int areaId;
+  final String areaId;
   final String areaName;
+
 
   const SkillsScreen({
     super.key,
@@ -25,27 +26,52 @@ class SkillsScreen extends ConsumerStatefulWidget {
 }
 
 class _SkillsScreenState extends ConsumerState<SkillsScreen> {
-  Future<void> _toggleSkill(int id, bool isChecked) async {
+  int get _areaIdInt  => int.tryParse(widget.areaId) ?? -1;
+
+  Future<void> _toggleSkill(String id, bool isChecked) async {
     await ref
-        .read(skillsProvider(widget.areaId).notifier)
-        .toggleSkill(id, isChecked);
+        .read(skillsControllerProvider)
+        .toggleSkill(
+        skillId: id,
+        isChecked: isChecked,
+    );
   }
 
-  Future<void> _editSkill(int id, String currentName) async {
-    final db = ref.read(databaseProvider).value;
-    if (db == null) return;
+  Future<void> _editSkill(String id, String currentName) async {
+    String updatedName = currentName;
 
-    await editSkillDialog(
+    await showDialog(
       context: context,
-      db: db,
-      tableName: SkillTable.table,
-      id: id,
-      currentName: currentName,
-      onUpdated: () {
-        ref.read(skillsProvider(widget.areaId).notifier).loadSkills();
+      builder: (context) => AlertDialog(
+        title: const Text('Edit skill'),
+        content: TextField(
+          autofocus: true,
+          controller: TextEditingController(text: currentName),
+          decoration: const InputDecoration(hintText: 'Input new skill name'),
+          onChanged: (value) => updatedName = value,
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+          ),
+          TextButton(onPressed: () {
+            if (updatedName.trim().isNotEmpty) {
+              Navigator.of(context).pop(updatedName);
+            }
+          },
+              child: const Text('Save'),
+          ),
+        ],
+      )
+    ).then((result) async {
+      if (result != null && result is String) {
+        await ref.read(skillsControllerProvider).editSkill(
+            skillId: id,
+            newName: result,
+        );
         ref.invalidate(goalsProvider);
-      },
-    );
+      }
+    });
   }
 
   Future<void> _showAddSkillDialog() async {
@@ -86,15 +112,16 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
     if (!mounted) return;
 
     if (result != null) {
-      await ref
-          .read(skillsProvider(widget.areaId).notifier)
-          .addSkill(result);
+      await ref.read(skillsControllerProvider).addSkill(
+        areaId: widget.areaId,
+        name: result,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final skills = ref.watch(skillsProvider(widget.areaId));
+    final skillsAsync = ref.watch(skillsByAreaStreamProvider(widget.areaId));
 
     return GradientBackground(
       child: Scaffold(
@@ -110,14 +137,20 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
           ),
           backgroundColor: Colors.transparent,
         ),
-        body: ListView.builder(
+        body:  skillsAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, _) => Center(child: Text('Error: $e')),
+          data: (skills) => ListView.builder(
           itemCount: skills.length,
           itemBuilder: (itemContext, index) {
             final skill = skills[index];
+            final skillId = skill['id'] as String;
+            final name = (skill['name'] as String?) ?? '';
+            final isChecked = (skill['isChecked'] as bool?) ?? false;
 
             return ListTile(
               title: Text(
-                (skill[SkillTable.name] ?? '').toString(),
+                name,
                 style: const TextStyle(
                   shadows: [
                     Shadow(
@@ -129,7 +162,7 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                 ),
               ),
               trailing: Checkbox(
-                value: skill[SkillTable.isChecked] == 1,
+                value: isChecked,
                 onChanged: (bool? value) async {
                   if (value == null) return;
 
@@ -158,7 +191,7 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                     if (!mounted || ok != true) return;
                   }
 
-                  await _toggleSkill(skill[SkillTable.id] as int, value);
+                  await _toggleSkill(skillId, value);
                   ref.invalidate(masteredSkillsProvider);
                 },
               ),
@@ -176,10 +209,7 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                 if (!mounted) return;
 
                 if (result == 'edit') {
-                  await _editSkill(
-                    skill[SkillTable.id] as int,
-                    (skill[SkillTable.name] ?? '').toString(),
-                  );
+                  await _editSkill(skillId, name);
                   if (!mounted) return;
                 } else if (result == 'delete') {
                   final ok = await showDialog<bool>(
@@ -205,29 +235,20 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                   if (!mounted) return;
 
                   if (ok == true) {
-                    await ref
-                        .read(skillsProvider(widget.areaId).notifier)
-                        .deleteSkill(skill[SkillTable.id] as int);
-                    await ref
-                        .read(skillsProvider(widget.areaId).notifier)
-                        .loadSkills();
+                    await ref.read(skillsControllerProvider).deleteSkill(skillId);
                   }
                 } else if (result == 'addToGoals') {
-                    final skillId = skill[SkillTable.id] as int;
-                    await ref.read(goalsProvider.notifier).addGoal(skillId);
-
-                    if (!mounted) return;
-
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Added to goals'))
+                      const SnackBar(content: Text('Added to goals(GOALS WILL BE MIGRATED TO FIRESTORE NEXT'))
                     );
                 }
               },
             );
           },
+          ),
         ),
         floatingActionButton: TennisBallButton(onPressed: _showAddSkillDialog),
-      ),
+        ),
     );
   }
 }
