@@ -6,8 +6,8 @@ import 'package:progress_hub_2/features/skills/presentation/providers/skill_area
 import 'package:progress_hub_2/features/skills/presentation/providers/skills_map_provider.dart';
 import 'package:progress_hub_2/features/goals/presentation/widgets/select_area_skill_dialog.dart';
 
-import '../widgets/tennis_ball_button.dart';
-import '../utils/show_context_menu.dart';
+import '../../../../core/widgets/tennis_ball_button.dart';
+import '../../../../utils/show_context_menu.dart';
 
 class GoalsScreen extends ConsumerStatefulWidget {
   const GoalsScreen({super.key});

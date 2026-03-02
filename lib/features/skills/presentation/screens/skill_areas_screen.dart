@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:progress_hub_2/providers/goals_providers.dart';
-import '../features/skills/presentation/providers/skill_areas_provider.dart';
-import '../screens/skills_screen.dart';
+import '../providers/skill_areas_provider.dart';
+import 'skills_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../widgets/tennis_ball_button.dart';
-import '../providers/mastered_screens_providers.dart';
-import '../database/db_constants.dart';
+import '../../../../core/widgets/tennis_ball_button.dart';
+import '../../../../providers/mastered_screens_providers.dart';
+import '../../../../database/db_constants.dart';
 
 class SkillAreasScreen extends ConsumerStatefulWidget {
   const SkillAreasScreen({super.key});
@@ -53,8 +52,6 @@ class _SkillAreasScreenState extends ConsumerState<SkillAreasScreen> {
       if (result != null && result is String) {
         await ref.read(skillAreasControllerProvider).editArea(id, result);
 
-        ref.invalidate(masteredSkillsProvider);
-        ref.invalidate(goalsProvider);
       }
     });
   }

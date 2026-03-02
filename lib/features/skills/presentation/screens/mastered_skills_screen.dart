@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
-import '../features/skills/presentation/providers/mastered_skills_provider.dart';
-import '../features/skills/presentation/providers/skill_areas_map_provider.dart';
-import '../features/skills/presentation/providers/skills_provider.dart';
+import '../providers/mastered_skills_provider.dart';
+import '../providers/skill_areas_map_provider.dart';
+import '../providers/skills_provider.dart';
 
 class MasteredSkillsScreen extends ConsumerWidget {
   const MasteredSkillsScreen({super.key});
