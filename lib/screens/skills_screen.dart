@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:progress_hub_2/features/goals/presentation/providers/goals_firestore_provider.dart';
 //import '../utils/edit_item_dialog.dart';
 import '../providers/skills_providers.dart';
 //import '../providers/database_provider.dart';
@@ -8,7 +9,7 @@ import '../providers/goals_providers.dart';
 import '../widgets/tennis_ball_button.dart';
 import '../utils/gradient_background.dart';
 //import '../database/db_constants.dart';
-import '../features/skills/presentation/providers/skills_firestore_provider.dart';
+import '../features/skills/presentation/providers/skills_provider.dart';
 
 class SkillsScreen extends ConsumerStatefulWidget {
   final String areaId;
@@ -238,8 +239,10 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                     await ref.read(skillsControllerProvider).deleteSkill(skillId);
                   }
                 } else if (result == 'addToGoals') {
+                    ref.read(goalsControllerProvider).addGoal(skillId);
+
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Added to goals(GOALS WILL BE MIGRATED TO FIRESTORE NEXT'))
+                      const SnackBar(content: Text('Goal added'))
                     );
                 }
               },

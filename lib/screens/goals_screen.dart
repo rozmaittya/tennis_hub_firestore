@@ -1,8 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import '../providers/goals_providers.dart';
+
+import 'package:progress_hub_2/features/goals/presentation/providers/goals_firestore_provider.dart';
+import 'package:progress_hub_2/features/skills/presentation/providers/skill_areas_map_provider.dart';
+import 'package:progress_hub_2/features/skills/presentation/providers/skills_map_provider.dart';
+import 'package:progress_hub_2/features/goals/presentation/widgets/select_area_skill_dialog.dart';
+
 import '../widgets/tennis_ball_button.dart';
-import '../utils/add_edit_goal_dialog.dart';
 import '../utils/show_context_menu.dart';
 
 class GoalsScreen extends ConsumerStatefulWidget {
@@ -17,14 +21,28 @@ class GoalsScreen extends ConsumerStatefulWidget {
 
   @override
   Widget build(BuildContext context) {
-    final goals = ref.watch(goalsProvider);
+    final goalsAsync = ref.watch(goalsStreamProvider);
+    final skillsMap = ref.watch(skillsMapProvider).value ?? {};
+    final areasMap = ref.watch(skillAreasMapProvider).value ?? {};
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: ListView.builder(
+      body: goalsAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(child: Text('Error: $e')),
+        data: (goals) => ListView.builder(
         itemCount: goals.length,
         itemBuilder: (itemContext, index) {
           final goal = goals[index];
+
+          final goalId = goal['id'] as String;
+          final skillId = goal['skillId'] as String;
+
+          final skill = skillsMap[skillId];
+          final skillName = (skill?['name'] as String?) ?? '';
+          final areaId = (skill?['areaId'] as String?) ?? '';
+          final areaName = areasMap[areaId] ?? '';
+
           return GestureDetector(
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -59,13 +77,13 @@ class GoalsScreen extends ConsumerStatefulWidget {
                       contentPadding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       title: Text(
-                        goal['area_name'],
+                        areaName,
                         style: const TextStyle(fontSize: 13, color: Colors.black54),
                       ),
                       subtitle: Padding(
                         padding: const EdgeInsets.only(top: 4),
                         child: Text(
-                          goal['skill_name'] ?? '',
+                          skillName,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
@@ -88,32 +106,23 @@ class GoalsScreen extends ConsumerStatefulWidget {
                 tapPosition: _tapPosition,
                 items: const [
                   PopupMenuItem(value: 'edit', child: Text('edit')),
-                  //PopupMenuItem(value: 'achieved', child: Text('achieved')),
                   PopupMenuItem(value: 'delete', child: Text('delete')),
                 ],
               );
 
               if (!context.mounted || selected == null) return;
 
-              final goalsNotifier = ref.read(goalsProvider.notifier);
-              final goalId = goal['id'] as int;
-
               switch (selected) {
                 case 'edit':
-                  final skillId = goal['skill_id'] as int?;
-                  await showAddEditGoalDialog(
-                      context: context,
-                      ref: ref,
-                      existingGoalId: goalId,
-                      existingSkillId: skillId,
+                  final newSkillId = await showDialog<String>(
+                    context: context,
+                    builder: (_) => SelectAreaSkillDialog(selectedSkillId: skillId),
                   );
-                  if (!context.mounted) return;
-                  break;
+                  if (!context.mounted || newSkillId == null) return;
 
-                case 'achieved':
-                  await goalsNotifier.toggleGoal(goalId, true);
-                  await goalsNotifier.loadGoals();
-                  if (!context.mounted) return;
+                  await ref.read(goalsControllerProvider).editGoal(
+                      goalId: goalId,
+                      newSkillId: newSkillId);
                   break;
 
                 case 'delete':
@@ -132,8 +141,7 @@ class GoalsScreen extends ConsumerStatefulWidget {
                   if (!context.mounted) return;
 
                   if (ok == true) {
-                    await goalsNotifier.deleteGoal(goalId);
-                    await goalsNotifier.loadGoals();
+                    await ref.read(goalsControllerProvider).deleteGoal(goalId);
                   }
                   break;
               }
@@ -141,9 +149,16 @@ class GoalsScreen extends ConsumerStatefulWidget {
           );
         },
       ),
+      ),
       floatingActionButton: TennisBallButton(
-        onPressed: () {
-          showAddEditGoalDialog(context: context, ref: ref);
+        onPressed: () async {
+          final skillId = await showDialog<String>(
+            context: context,
+            builder: (_) => const SelectAreaSkillDialog(),
+          );
+          if (skillId != null) {
+            await ref.read(goalsControllerProvider).addGoal(skillId);
+          }
         },
       ),
     );

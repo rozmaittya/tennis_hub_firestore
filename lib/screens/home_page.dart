@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:progress_hub_2/dev/seed_skill_areas_provider.dart';
 import 'package:progress_hub_2/utils/gradient_background.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/providers.dart';
@@ -15,6 +16,7 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(seedOnAppStartProvider);
     final currentScreen = ref.watch(currentScreenProvider);
 
     return GradientBackground(

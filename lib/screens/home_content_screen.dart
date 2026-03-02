@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:flutter/services.dart';
-import '../providers/skills_providers.dart';
+
+import 'package:progress_hub_2/features/skills/presentation/providers/skill_areas_map_provider.dart';
+import 'package:progress_hub_2/features/skills/presentation/providers/skill_areas_provider.dart';
+import 'package:progress_hub_2/features/skills/presentation/providers/skills_provider.dart';
+
+
 import '../providers/tips_providers.dart';
-import '../providers/skill_areas_providers.dart';
+
 
 class HomeContentScreen extends ConsumerWidget {
   const HomeContentScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final areas = ref.watch(areasProvider);
+    final areas = ref.watch(skillAreasStreamProvider);
     final tip = ref.watch(tipProvider);
 
     return ListView(
@@ -81,9 +87,7 @@ class HomeContentScreen extends ConsumerWidget {
                         return;
                       }
 
-                      final areaId = await ref.read(
-                        areaIdByNameProvider(tip.area),
-                      );
+                      final areaId = await ref.read(areaIdByNameProvider(tip.area));
 
                       if (areaId == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -96,9 +100,7 @@ class HomeContentScreen extends ConsumerWidget {
                         return;
                       }
 
-                      await ref
-                          .read(skillsProvider(areaId).notifier)
-                          .addSkill(tip.text);
+                      await ref.read(skillsControllerProvider).addSkill(areaId: areaId, name: tip.text);
 
                       if (!context.mounted) return;
 
