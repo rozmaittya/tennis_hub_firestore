@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'features/app/presentation/screens/home_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'core/config/firebase_options.dart';
 
+import 'package:progress_hub_2/core/config/firebase_options.dart';
+import 'package:progress_hub_2/features/app/presentation/screens/home_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../data/random_tennis_tips.dart';
+import 'package:progress_hub_2/features/tips/data/random_tennis_tips.dart';
 import 'dart:math';
 
 typedef Tip = ({String text, String title, String area});

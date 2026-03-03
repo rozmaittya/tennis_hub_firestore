@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import '../providers/skill_areas_provider.dart';
+import 'package:progress_hub_2/features/skills/presentation/providers/skill_areas_provider.dart';
 import 'skills_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/widgets/tennis_ball_button.dart';
-import '../../../../legasy/sqflite/providers/mastered_screens_providers.dart';
-import '../../../../legasy/sqflite/database/db_constants.dart';
+import 'package:progress_hub_2/core/widgets/tennis_ball_button.dart';
 
 class SkillAreasScreen extends ConsumerStatefulWidget {
   const SkillAreasScreen({super.key});

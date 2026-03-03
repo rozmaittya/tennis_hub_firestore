@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:progress_hub_2/features/goals/presentation/providers/goals_firestore_provider.dart';
-import '../../../../legasy/sqflite/providers/mastered_screens_providers.dart';
-import '../../../../core/widgets/tennis_ball_button.dart';
-import '../../../../core/theme/gradient_background.dart';
-import '../providers/skills_provider.dart';
+import 'package:progress_hub_2/core/widgets/tennis_ball_button.dart';
+import 'package:progress_hub_2/core/theme/gradient_background.dart';
+import 'package:progress_hub_2/features/skills/presentation/providers/skills_provider.dart';
 
 class SkillsScreen extends ConsumerStatefulWidget {
   final String areaId;
@@ -186,7 +185,6 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                   }
 
                   await _toggleSkill(skillId, value);
-                  ref.invalidate(masteredSkillsProvider);
                 },
               ),
               onLongPress: () async {

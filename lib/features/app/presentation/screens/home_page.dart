@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:progress_hub_2/core/init/seed_skill_areas_provider.dart';
 import 'package:progress_hub_2/core/theme/gradient_background.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../legasy/sqflite/providers/providers.dart';
-import '../../../goals/presentation/screens/goals_screen.dart';
-import '../models/screen_data.dart';
-import '../../../skills/presentation/screens/skill_areas_screen.dart';
-import '../../../skills/presentation/screens/mastered_skills_screen.dart';
-import 'home_content_screen.dart';
-import '../../../../core/widgets/help_dialog.dart';
+import 'package:progress_hub_2/features/app/presentation/providers/current_screen_provider.dart';
+import 'package:progress_hub_2/features/goals/presentation/screens/goals_screen.dart';
+import 'package:progress_hub_2/features/app/presentation/models/screen_data.dart';
+import 'package:progress_hub_2/features/skills/presentation/screens/skill_areas_screen.dart';
+import 'package:progress_hub_2/features/skills/presentation/screens/mastered_skills_screen.dart';
+import 'package:progress_hub_2/features/app/presentation/screens/home_content_screen.dart';
+import 'package:progress_hub_2/core/widgets/help_dialog.dart';
 
 
 class HomePage extends ConsumerWidget {
