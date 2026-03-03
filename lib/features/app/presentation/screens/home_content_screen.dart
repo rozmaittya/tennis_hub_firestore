@@ -8,7 +8,7 @@ import 'package:progress_hub_2/features/skills/presentation/providers/skill_area
 import 'package:progress_hub_2/features/skills/presentation/providers/skills_provider.dart';
 
 
-import '../providers/tips_providers.dart';
+import '../../../tips/providers/tips_provider.dart';
 
 
 class HomeContentScreen extends ConsumerWidget {

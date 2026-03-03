@@ -3,8 +3,8 @@ import '../providers/skill_areas_provider.dart';
 import 'skills_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/widgets/tennis_ball_button.dart';
-import '../../../../providers/mastered_screens_providers.dart';
-import '../../../../database/db_constants.dart';
+import '../../../../legasy/sqflite/providers/mastered_screens_providers.dart';
+import '../../../../legasy/sqflite/database/db_constants.dart';
 
 class SkillAreasScreen extends ConsumerStatefulWidget {
   const SkillAreasScreen({super.key});

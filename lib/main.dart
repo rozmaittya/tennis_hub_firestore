@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'screens/home_page.dart';
+import 'features/app/presentation/screens/home_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'core/config/firebase_options.dart';
 
 
 Future<void> main() async {

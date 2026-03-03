@@ -4,6 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SeedSkillAreas {
   static const _seedFlagDocId = '_seed';
+  
+  static String _toDocId(String name) {
+    return name
+        .trim()
+        .toLowerCase()
+        .replaceAll(RegExp(r's+'), '_')
+        .replaceAll(RegExp(r'[^a-z0-9_]+'), '');
+  }
 
   static Future<void> run({
     required FirebaseFirestore db,
@@ -11,8 +19,8 @@ class SeedSkillAreas {
     required List<String> defaultAreas,
 }) async {
     final userRef = db.collection('users').doc(uid);
-
     final seedRef = userRef.collection('meta').doc(_seedFlagDocId);
+    final areasColl = userRef.collection('skillAreas');
 
     await db.runTransaction((tx) async {
       final seedSnap = await tx.get(seedRef);
@@ -20,16 +28,24 @@ class SeedSkillAreas {
       final alreadySeeded = seedSnap.data()?['skillAreasSeeded'] == true;
       if (alreadySeeded) return;
 
-      final areasColl = userRef.collection('skillAreas');
+      for (final raw in defaultAreas) {
+        final areaName = raw.trim();
+        if (areaName.isEmpty) continue;
 
-      for (final areaName in defaultAreas) {
-        final areaDocRef = await areasColl.doc();
-        tx.set(areaDocRef, {
+        final docId = _toDocId(areaName);
+        final areaRef = areasColl.doc(docId);
+
+        final areaSnap = await tx.get(areaRef);
+        final isNew = !areaSnap.exists;
+
+        tx.set(areaRef, {
           'name': areaName,
-          'createdAt': FieldValue.serverTimestamp(),
+          if (isNew) 'createdAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
           'deletedAt': null,
-        });
+        },
+        SetOptions(merge:true),
+        );
       }
 
       tx.set(seedRef, {

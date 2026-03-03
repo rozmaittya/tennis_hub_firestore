@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:progress_hub_2/dev/seed_skill_areas.dart';
+import 'package:progress_hub_2/core/init/seed_skill_areas.dart';
 import 'package:progress_hub_2/data/default_skill_areas.dart';
 import 'package:progress_hub_2/features/skills/presentation/providers/skill_areas_provider.dart';
 

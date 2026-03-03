@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:progress_hub_2/features/goals/presentation/providers/goals_firestore_provider.dart';
-import '../../../../providers/mastered_screens_providers.dart';
+import '../../../../legasy/sqflite/providers/mastered_screens_providers.dart';
 import '../../../../core/widgets/tennis_ball_button.dart';
 import '../../../../core/theme/gradient_background.dart';
 import '../providers/skills_provider.dart';
