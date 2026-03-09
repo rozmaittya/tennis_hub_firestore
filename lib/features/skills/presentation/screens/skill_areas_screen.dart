@@ -140,8 +140,45 @@ class _SkillAreasScreenState extends ConsumerState<SkillAreasScreen> {
                 ),
               );
             },
-            onLongPress: () =>
-                _editItem(areaId, areaName),
+            // onLongPress: () =>
+            //     _editItem(areaId, areaName),
+            onLongPress: () async {
+              final result = await showMenu<String>(
+                  context: context,
+                  position: const RelativeRect.fromLTRB(200, 200, 50, 50),
+                  items: const [
+                    PopupMenuItem(value: 'edit', child: Text('Edit')),
+                    PopupMenuItem(value: 'delete', child: Text('Delete')),
+                  ],
+              );
+              if (!mounted) return;
+
+              if (result == 'edit') {
+                await _editItem(areaId, areaName);
+              } else if (result == 'delete') {
+                final ok = await showDialog(
+                    context: context,
+                    builder: (dialogContext) => AlertDialog(
+                      title: const Text('Delete group?'),
+                      content: const Text('Are you sure you want to delete this group?'),
+                      actions: [
+                        TextButton(
+                            onPressed: () => Navigator.pop(dialogContext, false),
+                            child: const Text('Cancel'),),
+                        TextButton(
+                            onPressed: () => Navigator.pop(dialogContext, true),
+                            child: const Text('Delete'),),
+                      ],
+                    ),
+                );
+
+                if (!mounted) return;
+
+                if (ok == true) {
+                  await ref.read(skillAreasControllerProvider).deleteArea(areaId);
+                }
+              }
+            },
           );
         },
       ),
