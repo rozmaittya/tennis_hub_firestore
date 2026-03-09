@@ -24,8 +24,26 @@ class _SelectAreaSkillDialogState extends ConsumerState<SelectAreaSkillDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final areasMap =  ref.watch(skillAreasMapProvider).value ?? <String, String>{};
-    final skillsMap = ref.watch(skillsMapProvider).value ?? {};
+    final areasAsync =  ref.watch(skillAreasMapProvider);
+    final skillsAsync = ref.watch(skillsMapProvider);
+
+    if (areasAsync.isLoading || skillsAsync.isLoading) {
+      return const AlertDialog(
+        content: SizedBox(
+          height: 120,
+            child: Center(child: CircularProgressIndicator()),
+        ),
+      );
+    }
+
+    if (areasAsync.hasError || skillsAsync.hasError) {
+      return AlertDialog(
+        content: Text('Error loading data'),
+      );
+    }
+
+    final areasMap = areasAsync.value ?? <String, String>{};
+    final skillsMap = skillsAsync.value ?? {};
 
     final areas = areasMap.entries.map((e) => {'id': e.key, 'name': e.value}).toList()
     ..sort((a,b) => (a['name'] as String).compareTo(b['name'] as String));
@@ -89,7 +107,7 @@ class _SelectAreaSkillDialogState extends ConsumerState<SelectAreaSkillDialog> {
           ))
           .toList(),
           onChanged: (skillId) {
-          setState() => selectedSkillId = skillId;
+          setState(() => selectedSkillId = skillId);
           },
       ),
      ],

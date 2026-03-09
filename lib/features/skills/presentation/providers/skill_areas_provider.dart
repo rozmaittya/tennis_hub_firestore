@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final currentUserIdProvider = Provider<String>((ref) => 'demo');
-
-final firebaseFirestoreProvider = Provider<FirebaseFirestore>((ref) {
-  return FirebaseFirestore.instance;
-});
+import 'package:progress_hub_2/core/providers/app_providers.dart';
 
 final skillAreasStreamProvider =
     StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
@@ -16,6 +12,7 @@ final skillAreasStreamProvider =
           .collection('users')
           .doc(uid)
           .collection('skillAreas')
+          .where('deletedAt', isNull: true)
           .orderBy('name')
           .snapshots()
           .map((snap) => snap.docs
@@ -23,7 +20,7 @@ final skillAreasStreamProvider =
           .toList());
     });
 
-final skillAreasControllerProvider = Provider<SkillAreasController>((ref) {
+final skillAreasControllerProvider = Provider.autoDispose<SkillAreasController>((ref) {
   return SkillAreasController(ref);
 });
 
@@ -43,9 +40,9 @@ class SkillAreasController {
 
     await _col.add({
       'name': trimmed,
-      'createAt': FieldValue.serverTimestamp(),
-      'updateAt': FieldValue.serverTimestamp(),
-      'deleteAt': null,
+      'createdAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+      'deletedAt': null,
     });
   }
 
@@ -55,6 +52,13 @@ class SkillAreasController {
 
     await _col.doc(id).update({
       'name': trimmed,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<void> deleteArea(String id) async {
+    await _col.doc(id).update({
+      'deletedAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
   }

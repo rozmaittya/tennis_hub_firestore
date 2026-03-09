@@ -16,7 +16,7 @@ class MasteredSkillsScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: masteredSkillsAsync.when(
-          error: (e, _) => Center(child: Text('Errot: $e'),),
+          error: (e, _) => Center(child: Text('Error: $e'),),
           loading: () => const Center(child: CircularProgressIndicator(),),
           data: (masteredSkills) {
             final areasMap = areasMapAsync.value ?? const <String, String>{};

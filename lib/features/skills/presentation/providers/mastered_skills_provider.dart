@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'skill_areas_provider.dart';
+import 'package:progress_hub_2/core/providers/app_providers.dart';
 
 final masteredSkillsStreamProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>> ((ref) {
   final uid = ref.watch(currentUserIdProvider);

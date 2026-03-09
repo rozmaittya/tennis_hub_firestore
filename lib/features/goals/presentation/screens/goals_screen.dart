@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
-import 'package:progress_hub_2/features/goals/presentation/providers/goals_firestore_provider.dart';
+import 'package:progress_hub_2/features/goals/presentation/providers/goals_provider.dart';
 import 'package:progress_hub_2/features/skills/presentation/providers/skill_areas_map_provider.dart';
 import 'package:progress_hub_2/features/skills/presentation/providers/skills_map_provider.dart';
 import 'package:progress_hub_2/features/goals/presentation/widgets/select_area_skill_dialog.dart';

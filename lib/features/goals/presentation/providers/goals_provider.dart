@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:progress_hub_2/features/skills/presentation/providers/skill_areas_provider.dart';
+import 'package:progress_hub_2/core/providers/app_providers.dart';
 
 final goalsStreamProvider =
     StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
