@@ -64,7 +64,7 @@ class GoalsScreen extends ConsumerStatefulWidget {
                     width: 6,
                     height: 80,
                     decoration: const BoxDecoration(
-                      color: Colors.green,
+                      color: Colors.deepOrangeAccent,
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(16),
                         bottomLeft: Radius.circular(16),
