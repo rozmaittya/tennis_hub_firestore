@@ -3,13 +3,12 @@
   <img src="screenshots/preview.png" alt="Tennis Hub App Preview" width="300">
 </p>
 
-Tennis Hub is a Flutter mobile app designed to help tennis players
-track skill development, manage training goals, and stay motivated
-with daily improvement tips.
 
-The app demonstrates clean Flutter architecture, сloud data storage,
-and scalable state management — suitable for real-world sports and
-lifestyle applications.
+Tennis Hub is a Flutter mobile app designed to help tennis players track skill development, manage training goals, and stay motivated with daily improvement tips.
+
+The project demonstrates clean Flutter architecture, cloud-based data storage with Firebase Firestore, and scalable state management using Riverpod.
+
+The app structure and code organization are designed to resemble production-level Flutter applications.
 
 ---
 
@@ -35,33 +34,37 @@ lifestyle applications.
 ## 🚀 Key Features
 
 - Skills organized into groups with progress tracking
-- Training and match goals
-- "Tip of the Day" to encourage consistent improvement
+- Training and match goals management
+- "Tip of the Day" to encourage continuous improvement
 - Cloud data storage using Firebase Firestore
-- Clean separation of UI, state, and data layers
+- Soft deletion system for safe data management
 
 ---
 
 ## 🧠 Technical Highlights
 
-- Riverpod for predictable and testable state management
+- Riverpod for predictable and reactive state management
 - Firebase Firestore backend
-- Repository pattern for data access abstraction
-- Modular and scalable folder structure
-- Null-safe Dart codebase
+- Controller-based architecture for Firestore data operations
+- Feature-based project structure
+- Fully null-safe Dart codebase
 
 ---
 
 ## 🛠 Tech Stack
 
-- Flutter (Material 3)
+- Flutter
 - Riverpod
 - Firebase Firestore
+- Material Design UI
 
 ---
 
 ## 🧩 Architecture Overview
 
+The project follows a **feature-based architecture** where each feature encapsulates its UI, state management, and business logic.
+
+Shared utilities and configuration are placed in the `core` layer.
 ```text
 lib/
 ├─ core/
