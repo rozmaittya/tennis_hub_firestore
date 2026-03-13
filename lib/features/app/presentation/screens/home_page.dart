@@ -11,13 +11,20 @@ import 'package:progress_hub_2/features/skills/presentation/screens/mastered_ski
 import 'package:progress_hub_2/features/app/presentation/screens/home_content_screen.dart';
 import 'package:progress_hub_2/core/widgets/help_dialog.dart';
 
-
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(seedOnAppStartProvider);
+    final seedState = ref.watch(seedOnAppStartProvider);
+
+    seedState.whenOrNull(
+      error: (error, stackTrace) {
+        debugPrint('Seed error: $error');
+        debugPrintStack(stackTrace: stackTrace);
+      },
+    );
+
     final currentScreen = ref.watch(currentScreenProvider);
 
     return GradientBackground(

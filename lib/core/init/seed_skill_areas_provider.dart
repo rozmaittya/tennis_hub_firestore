@@ -9,9 +9,12 @@ final seedOnAppStartProvider = FutureProvider<void>((ref) async {
 
   if (uid.isEmpty) return;
 
+  print('seedOnAppStartProvider started for uid=$uid');
+
   await SeedSkillAreas.run(
       db: db,
       uid: uid,
       defaultAreas: defaultSkillAreas,
   );
+  print('seedOnAppStartProvider finished');
 });

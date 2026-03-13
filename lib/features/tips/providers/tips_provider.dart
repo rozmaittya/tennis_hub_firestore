@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:progress_hub_2/features/tips/data/random_tennis_tips.dart';
 import 'dart:math';
 
-typedef Tip = ({String text, String title, String area});
+typedef Tip = ({String text, String title, String area, String areaKey});
 
 final tipProvider = NotifierProvider<TipNotifier, Tip>(TipNotifier.new);
 
@@ -27,12 +27,12 @@ class TipNotifier extends Notifier<Tip> {
     final areaKey = categories[dayOfYear % categories.length];
 
     final tips = tennisTipsByCategory[areaKey] ?? const <String>[];
-    if (tips.isEmpty) return (title: '', text: '', area: '');
+    if (tips.isEmpty) return (title: '', text: '', area: '', areaKey: '');
 
     final text = tips[dayOfYear % tips.length];
     final area = formatAreaKey(areaKey);
     final title = 'Tip of the Day • $area';
-    return (title: title, text: text, area: area);
+    return (title: title, text: text, area: area, areaKey: areaKey);
   }
 
   Tip _randomTip() {
@@ -40,12 +40,12 @@ class TipNotifier extends Notifier<Tip> {
     final areaKey = keys[_rnd.nextInt(keys.length)];
 
     final tips = tennisTipsByCategory[areaKey] ?? <String>[];
-    if (tips.isEmpty) return (title: '', text: '', area: '');
+    if (tips.isEmpty) return (title: '', text: '', area: '', areaKey:  '');
 
     final text = tips[_rnd.nextInt(tips.length)];
     final area = formatAreaKey(areaKey);
     final title = 'Tip • ${formatAreaKey(areaKey)}';
-    return (title: title, text: text, area: area);
+    return (title: title, text: text, area: area, areaKey: areaKey);
   }
 
   String formatAreaKey(String key) {

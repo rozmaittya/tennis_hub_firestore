@@ -215,8 +215,8 @@ const Map<String, List<String>> tennisTipsByCategory = {
     'A good lob is deep; depth matters more than speed.',
   ],
 
-  // 🦶 MOVEMENT (20)
-  'movement': [
+  // 🦶 FOOTWORK (20)
+  'footwork': [
     'Use a split step before every opponent shot.',
     'Recover to the center after each shot.',
     'Move your feet before hitting the ball.',

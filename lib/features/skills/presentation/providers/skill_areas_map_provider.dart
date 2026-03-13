@@ -26,3 +26,26 @@ final areaIdByNameProvider = Provider.family.autoDispose<String?, String>((ref, 
   final nameToId = ref.watch(skillAreaNameToIdMapProvider);
   return nameToId[areaName];
 });
+
+final  skillAreaIdByKeyMapProvider =
+    Provider.autoDispose<Map<String, String>>((ref) {
+      final areasMap = ref.watch(skillAreasStreamProvider);
+
+      return areasMap.when(
+          data: (areas) {
+            return {
+              for (final a in areas)
+                if (a['key'] != null && a['id'] != null)
+                  a['key'] as String: a['id'] as String,
+            };
+          },
+          error: (_, __) => <String, String>{},
+          loading: () => <String, String>{},
+      );
+    });
+
+final areaIdByKeyProvider =
+    Provider.family.autoDispose<String?, String>((ref, areaKey) {
+      final keyToId = ref.watch(skillAreaIdByKeyMapProvider);
+      return keyToId[areaKey];
+    });

@@ -2,43 +2,35 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SeedSkillAreas {
   static const _seedFlagDocId = '_seed';
-  
-  static String _toDocId(String name) {
-    return name
-        .trim()
-        .toLowerCase()
-        .replaceAll(RegExp(r's+'), '_')
-        .replaceAll(RegExp(r'[^a-z0-9_]+'), '');
-  }
 
   static Future<void> run({
     required FirebaseFirestore db,
     required String uid,
-    required List<String> defaultAreas,
+    required List<Map<String, String>> defaultAreas,
 }) async {
     final userRef = db.collection('users').doc(uid);
     final seedRef = userRef.collection('meta').doc(_seedFlagDocId);
     final areasColl = userRef.collection('skillAreas');
 
-    await db.runTransaction((tx) async {
-      final seedSnap = await tx.get(seedRef);
-
+      final seedSnap = await seedRef.get();
       final alreadySeeded = seedSnap.data()?['skillAreasSeeded'] == true;
+
       if (alreadySeeded) return;
 
-      for (final raw in defaultAreas) {
-        final areaName = raw.trim();
-        if (areaName.isEmpty) continue;
+      final batch = db.batch();
 
-        final docId = _toDocId(areaName);
-        final areaRef = areasColl.doc(docId);
+      for (final area in defaultAreas) {
+        final key = area['key']!;
+        final name = area['name']!;
 
-        final areaSnap = await tx.get(areaRef);
-        final isNew = !areaSnap.exists;
+        final ref = areasColl.doc(key);
 
-        tx.set(areaRef, {
-          'name': areaName,
-          if (isNew) 'createdAt': FieldValue.serverTimestamp(),
+        batch.set(
+          ref,
+          {
+            'key': key,
+          'name': name,
+       'createdAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
           'deletedAt': null,
         },
@@ -46,10 +38,11 @@ class SeedSkillAreas {
         );
       }
 
-      tx.set(seedRef, {
+      batch.set(seedRef, {
         'skillAreasSeeded': true,
         'seededAt': FieldValue.serverTimestamp(),
       });
-    });
+
+      await batch.commit();
+    }
   }
-}

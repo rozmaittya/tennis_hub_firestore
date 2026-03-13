@@ -7,7 +7,7 @@ Tennis Hub is a Flutter mobile app designed to help tennis players
 track skill development, manage training goals, and stay motivated
 with daily improvement tips.
 
-The app demonstrates clean Flutter architecture, local persistence,
+The app demonstrates clean Flutter architecture, сloud data storage,
 and scalable state management — suitable for real-world sports and
 lifestyle applications.
 
@@ -37,7 +37,7 @@ lifestyle applications.
 - Skills organized into groups with progress tracking
 - Training and match goals
 - "Tip of the Day" to encourage consistent improvement
-- Local data persistence using SQLite
+- Cloud data storage using Firebase Firestore
 - Clean separation of UI, state, and data layers
 
 ---
@@ -45,7 +45,7 @@ lifestyle applications.
 ## 🧠 Technical Highlights
 
 - Riverpod for predictable and testable state management
-- SQLite (sqflite) for offline-first data storage
+- Firebase Firestore backend
 - Repository pattern for data access abstraction
 - Modular and scalable folder structure
 - Null-safe Dart codebase
@@ -56,7 +56,7 @@ lifestyle applications.
 
 - Flutter (Material 3)
 - Riverpod
-- SQLite (sqflite)
+- Firebase Firestore
 
 ---
 
@@ -64,39 +64,61 @@ lifestyle applications.
 
 ```text
 lib/
+├─ core/
+│  ├─ config/
+│  │  └─ firebase_options.dart
+│  ├─ init/
+│  │  ├─ seed_skill_areas.dart
+│  │  └─ seed_skill_areas_provider.dart
+│  ├─ providers/
+│  │  └─ app_providers.dart
+│  ├─ theme/
+│  │  └─ gradient_background.dart
+│  └─ widgets/
+│     ├─ help_dialog.dart
+│     ├─ show_context_menu.dart
+│     └─ tennis_ball_button.dart
+│
 ├─ data/
-│  └─ random_tennis_tips.dart
+│  └─ default_skill_areas.dart
 │
-├─ database/
-│  ├─ database.dart
-│  └─ db_constants.dart
-│
-├─ providers/
-│  ├─ database_provider.dart
-│  ├─ goals_providers.dart
-│  ├─ mastered_screens_providers.dart
-│  ├─ providers.dart
-│  ├─ skill_areas_providers.dart
-│  ├─ skills_providers.dart
-│  └─ tips_providers.dart
-│
-├─ screens/
-│  ├─ goals_screen.dart
-│  ├─ home_content_screen.dart
-│  ├─ home_page.dart
-│  ├─ mastered_skills_screen.dart
-│  ├─ screen_data.dart
-│  ├─ skill_areas_screen.dart
-│  └─ skills_screen.dart
-│
-├─ utils/
-│  ├─ add_edit_goal_dialog.dart
-│  ├─ edit_item_dialog.dart
-│  ├─ gradient_background.dart
-│  └─ show_context_menu.dart
-│
-├─ widgets/
-│  ├─ help_dialog.dart
-│  └─ tennis_ball_button.dart
+├─ features/
+│  ├─ app/
+│  │  └─ presentation/
+│  │     ├─ models/
+│  │     │  └─ screen_data.dart
+│  │     ├─ providers/
+│  │     │  └─ current_screen_provider.dart
+│  │     └─ screens/
+│  │        ├─ home_content_screen.dart
+│  │        └─ home_page.dart
+│  │
+│  ├─ goals/
+│  │  └─ presentation/
+│  │     ├─ providers/
+│  │     │  └─ goals_provider.dart
+│  │     ├─ screens/
+│  │     │  └─ goals_screen.dart
+│  │     └─ widgets/
+│  │        └─ select_area_skill_dialog.dart
+│  │
+│  ├─ skills/
+│  │  └─ presentation/
+│  │     ├─ providers/
+│  │     │  ├─ mastered_skills_provider.dart
+│  │     │  ├─ skill_areas_map_provider.dart
+│  │     │  ├─ skill_areas_provider.dart
+│  │     │  ├─ skills_map_provider.dart
+│  │     │  └─ skills_provider.dart
+│  │     └─ screens/
+│  │        ├─ mastered_skills_screen.dart
+│  │        ├─ skill_areas_screen.dart
+│  │        └─ skills_screen.dart
+│  │
+│  └─ tips/
+│     ├─ data/
+│     │  └─ random_tennis_tips.dart
+│     └─ providers/
+│        └─ tips_provider.dart
 │
 └─ main.dart

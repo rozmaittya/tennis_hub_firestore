@@ -80,14 +80,14 @@ class HomeContentScreen extends ConsumerWidget {
                     onPressed: () async {
                       final tip = ref.read(tipProvider);
 
-                      if (tip.text.isEmpty || tip.area.isEmpty) {
+                      if (tip.text.isEmpty || tip.areaKey.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('No tip to add')),
                         );
                         return;
                       }
 
-                      final areaId = await ref.read(areaIdByNameProvider(tip.area));
+                      final areaId = ref.read(areaIdByKeyProvider(tip.areaKey));
 
                       if (areaId == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
