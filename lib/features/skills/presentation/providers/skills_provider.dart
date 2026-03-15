@@ -29,10 +29,12 @@ final skillsControllerProvider = Provider<SkillsController>((ref) {
 
 class SkillsController {
   final Ref ref;
+
   SkillsController(this.ref);
 
   FirebaseFirestore get _db => ref.read(firebaseFirestoreProvider);
-  String get _uid =>  ref.read(currentUserIdProvider);
+
+  String get _uid => ref.read(currentUserIdProvider);
 
   CollectionReference<Map<String, dynamic>> get _col =>
       _db.collection('users').doc(_uid).collection('skills');
@@ -51,7 +53,8 @@ class SkillsController {
     });
   }
 
-  Future<void> editSkill({required String skillId, required String newName}) async {
+  Future<void> editSkill(
+      {required String skillId, required String newName}) async {
     final trimmed = newName.trim();
     if (trimmed.isEmpty) return;
 
@@ -61,7 +64,8 @@ class SkillsController {
     });
   }
 
-  Future<void> toggleSkill({required String skillId, required bool isChecked}) async {
+  Future<void> toggleSkill(
+      {required String skillId, required bool isChecked}) async {
     await _col.doc(skillId).update({
       'isChecked': isChecked,
       'updatedAt': FieldValue.serverTimestamp(),
@@ -69,10 +73,32 @@ class SkillsController {
   }
 
   Future<void> deleteSkill(String skillId) async {
-    await _col.doc(skillId).update({
-      'deletedAt': FieldValue.serverTimestamp(),
-      'updatedAt': FieldValue.serverTimestamp(),
+    final now = FieldValue.serverTimestamp();
+
+    final skillRef = _col.doc(skillId);
+
+    final goalsQuery = await _db
+        .collection('users')
+        .doc(_uid)
+        .collection('goals')
+        .where('deletedAt', isNull: true)
+        .where('skillId', isEqualTo: skillId)
+        .get();
+
+    final batch = _db.batch();
+
+    batch.update(skillRef, {
+      'deletedAt': now,
+      'updatedAt': now,
     });
+
+    for (final goalDoc in goalsQuery.docs) {
+      batch.update(goalDoc.reference, {
+        'deletedAt': now,
+        'updatedAt': now,
+      });
+    }
+    await batch.commit();
   }
 }
 

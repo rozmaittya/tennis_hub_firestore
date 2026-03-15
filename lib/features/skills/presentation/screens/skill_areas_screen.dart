@@ -159,8 +159,8 @@ class _SkillAreasScreenState extends ConsumerState<SkillAreasScreen> {
                 final ok = await showDialog(
                     context: context,
                     builder: (dialogContext) => AlertDialog(
-                      title: const Text('Delete group?'),
-                      content: const Text('Are you sure you want to delete this group?'),
+                      title: const Text('Delete this skill group?'),
+                      content: const Text('All related skills and goals will also be removed.'),
                       actions: [
                         TextButton(
                             onPressed: () => Navigator.pop(dialogContext, false),

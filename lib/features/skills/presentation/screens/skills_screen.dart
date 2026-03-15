@@ -207,9 +207,9 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                   final ok = await showDialog<bool>(
                     context: context,
                     builder: (dialogContext) => AlertDialog(
-                      title: const Text('Delete skill?'),
+                      title: const Text('Delete this skill?'),
                       content: const Text(
-                        'Are you sure you want to delete this skill?',
+                        'All goals related to this skill will also be removed.',
                       ),
                       actions: [
                         TextButton(

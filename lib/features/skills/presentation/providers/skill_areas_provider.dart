@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:progress_hub_2/core/providers/app_providers.dart';
@@ -57,10 +58,51 @@ class SkillAreasController {
   }
 
   Future<void> deleteArea(String id) async {
-    await _col.doc(id).update({
-      'deletedAt': FieldValue.serverTimestamp(),
-      'updatedAt': FieldValue.serverTimestamp(),
+    final now = FieldValue.serverTimestamp();
+    
+    final areaRef = _col.doc(id);
+    
+    final skillsQuery = await _db
+        .collection('users')
+        .doc(_uid)
+        .collection('goals')
+        .where('deletedAt', isNull: true)
+        .where('areaId', isEqualTo: id)
+        .get();
+
+    final skillIds  = skillsQuery.docs.map((doc) => doc.id).toList();
+
+    final goalsQuery = await _db
+        .collection('users')
+        .doc(_uid)
+        .collection('goals')
+        .where('deleteAt', isNull: true)
+        .get();
+
+    final batch = _db.batch();
+
+    batch.update(areaRef, {
+      'deletedAt': now,
+      'updatedAt': now,
     });
+
+    for (final skillDoc in skillsQuery.docs) {
+      batch.update(skillDoc.reference, {
+        'deletedAt': now,
+        'updatedAt': now,
+      });
+    }
+
+    for (final goalDoc in goalsQuery.docs) {
+        final skillId = goalDoc.data()['skillId'] as String;
+        if (skillId != null && skillIds.contains(skillId)) {
+          batch.update(goalDoc.reference, {
+            'deletedAt': now,
+            'updatedAt': now,
+          });
+        }
+     }
+
   }
 
 }
